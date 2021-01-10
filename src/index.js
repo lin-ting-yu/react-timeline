@@ -8,7 +8,9 @@ class App extends React.Component {
 
   render() {
     return (
-      <Timeline timeItemList={timelineItems}></Timeline>
+      <div className="parent-container">
+        <Timeline timeItemList={timelineItems}></Timeline>
+      </div>
     );
   }
 }

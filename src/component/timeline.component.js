@@ -6,6 +6,9 @@ export class Timeline extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            zoom: 1
+        }
     }
 
     get timeItemList() {
@@ -18,10 +21,23 @@ export class Timeline extends React.Component {
 
     render() {
         return (
-            <div>
-                <h1>Airtable Timeline</h1>
-                <h3>{this.timeItemList.length} timeline items to render</h3>
-                <div><TimeItem name="aaaa"></TimeItem></div>
+            <div className="timeline-container">
+                <div className="timeline-title">Airtable Timeline</div>
+                <div className="timeline-content">
+                    <div className="timeline-year">2018</div>
+                    <div className="timeline-scroll-container">
+                        <div className="timeline-month-list">
+                            <div className="timeline-month">10</div>
+                        </div>
+                        <div className="timeline-day">25</div>
+                        <div className="timeline-time-container">
+                            <div style={{height: 1000 + 'px'}}>2222</div>
+                        </div>
+                    </div>
+
+
+
+                </div>
             </div>
         );
     }

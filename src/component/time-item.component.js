@@ -1,6 +1,4 @@
 import React from 'react';
-import './time-item.css';
-
 
 export class TimeItem extends React.Component {
 
