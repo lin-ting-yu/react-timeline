@@ -246,9 +246,7 @@ export class Timeline extends React.Component {
                             className="timeline-day-list"
                             style={dayStyle}
                         >
-                            <div className="timeline-day">
-                                {dayList}
-                            </div>
+                            {dayList}
                         </div>
                         <div
                             className="timeline-time-container"
