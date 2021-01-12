@@ -277,11 +277,11 @@ export class Timeline extends React.Component {
             if (this.isItemMouseEnter) {
                 return;
             }
-            this.setState({ day: [this.calcDay(e.pageX, 'M/D', 'center')] });
+            this.setState({ day: [this.calcDay(e.pageX, 'D', 'center')] });
         };
         const onTimeMouseEnter = (e) => {
             this.isMouseEnter = true;
-            this.setState({ day: [this.calcDay(e.pageX, 'M/D', 'center')] });
+            this.setState({ day: [this.calcDay(e.pageX, 'D', 'center')] });
         };
         const onTimeMouseLeave = (e) => {
             this.isMouseEnter = false;

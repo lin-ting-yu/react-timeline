@@ -100,7 +100,7 @@ class App extends React.Component {
       const today = dayjs().format('YYYY-MM-DD');
       this.setState({
         isAdd: true,
-        day: {
+        time: {
           id: new Date().getTime(),
           name: '',
           start: today,

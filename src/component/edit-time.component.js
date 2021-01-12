@@ -8,6 +8,7 @@ export class EditTime extends React.Component {
         this.state = {
             timeData: this.props.timeData
         }
+        
     }
     render() {
         const innerValue = { ...this.state.timeData };
@@ -65,7 +66,7 @@ export class EditTime extends React.Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col">color</div>
+                        <div className="col">Color</div>
                         <div className="col">
                             <input
                                 name="color"
