@@ -27,7 +27,7 @@ export class Timeline extends React.Component {
     lastDayjs = null;
 
     timeHeight = 30;
-    topPadding = 10;
+    topPadding = 20;
     rowPadding = 20;
     titlePadding = 40;
 
@@ -266,8 +266,8 @@ export class Timeline extends React.Component {
             backgroundImage: `repeating-linear-gradient(${'90deg, ' +
                 '#cccccc 0px, ' +
                 '#cccccc 1px, ' +
-                '#eee 1px, ' +
-                `#eee ${this.state.dayWidth}px`
+                '#dedede 1px, ' +
+                `#dedede ${this.state.dayWidth}px`
                 })`
         }
         const onTimeScroll = (e) => {

@@ -26,6 +26,7 @@
     background-color: #fff;
     border-radius: 10px;
     position: relative;
+    box-shadow: 0px 15px 15px -10px rgba(0, 0, 0, 0.3);
 }
 
 .edit-time .row {
@@ -89,7 +90,6 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    
 }
 
 .edit-time .close::before {
