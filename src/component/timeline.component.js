@@ -13,37 +13,12 @@ export class Timeline extends React.Component {
             day: [], // { format: string; day: dayjs; pos: 'flex-start' | 'center' | 'flex-end', left: number }
             scrollLeft: 0
         }
-        // 排序
-        this.timeItemList = this.sortTimeItemList();
-        // 設定最早日期
-        this.firstDayjs = dayjs(this.timeItemList[0].start);
-        this.setRowListAndFindLast();
-        this.state.year = this.state.year.sort();
-        this.yearReverse = [...this.state.year].reverse();
-        window.addEventListener('keydown', (e) => {
-            if (this.isKeydown) {
-                return;
-            }
-            this.isKeydown = true;
-            if (e.code === 'Minus') {
-                if (this.state.dayWidth > 10) {
-                    this.setState({ 
-                        dayWidth: this.state.dayWidth - 5,
-                        day: []
-                    });
-                }
-            } else if (e.code === 'Equal') {
-                if (this.state.dayWidth < 100) {
-                    this.setState({ 
-                        dayWidth: this.state.dayWidth + 5,
-                        day: []
-                    });
-                }
-            }
-        });
-        window.addEventListener('keyup', (e) => {
-            this.isKeydown = false;
-        });
+        window.addEventListener('keydown', this.windowKeydown);
+        window.addEventListener('keyup', this.wondowKeyup);
+
+        this.oldTimeItemList = props.timeItemList;
+        this.init(this.props, this.state);
+        
     }
 
     // readonly value: start;
@@ -62,26 +37,76 @@ export class Timeline extends React.Component {
     isKeydown = false;
     isMouseEnter = true;
     isItemMouseEnter = false;
+    oldTimeItemList = null
 
-    sortTimeItemList() {
-        return this.props.timeItemList.sort((a, b) => {
+    windowKeydown = (e) => {
+        if (this.isKeydown) {
+            return;
+        }
+        this.isKeydown = true;
+        if (e.code === 'Minus') {
+            if (this.state.dayWidth > 10) {
+                this.setState({
+                    dayWidth: this.state.dayWidth - 5,
+                    day: []
+                });
+            }
+        } else if (e.code === 'Equal') {
+            if (this.state.dayWidth < 100) {
+                this.setState({
+                    dayWidth: this.state.dayWidth + 5,
+                    day: []
+                });
+            }
+        }
+    };
+
+    wondowKeyup = (e) => {
+        if (e.code === 'Minus' || e.code === 'Equal') {
+            this.isKeydown = false;
+        }
+    };
+
+    shouldComponentUpdate(props, state) {
+        if (this.oldTimeItemList !== props.timeItemList) {
+            this.oldTimeItemList = props.timeItemList;
+            this.init(props, state);
+        }
+        return true;
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.windowKeydown);
+        window.removeEventListener('keyup', this.wondowKeyup);
+    }
+
+    init(props, state) {
+        this.rowList = [];
+        // 排序
+        this.timeItemList = this.sortTimeItemList(props, state);
+        // 設定最早日期
+        this.firstDayjs = dayjs(this.timeItemList[0].start);
+        this.setRowListAndFindLast(props, state);
+        const firstDayjs = this.firstDayjs.subtract(this.state.paddingDay, 'day').format('YYYY');
+        const lastDayjs = this.lastDayjs.add(this.state.paddingDay, 'day').format('YYYY');
+        state.year = [];
+        for (let year = +firstDayjs; year <= +lastDayjs; year++){
+            state.year.push(year + '');
+        }
+        this.yearReverse = [...state.year].reverse();
+    }
+   
+    sortTimeItemList(props, state) {
+        return props.timeItemList.sort((a, b) => {
             if (dayjs(a.start).isBefore(b.start)) { return -1; }
             if (dayjs(a.start).isAfter(b.start)) { return 1; }
             return 0;
         });
     }
-    setRowListAndFindLast() {
+
+    setRowListAndFindLast(props, state) {
         this.timeItemList.forEach((time) => {
             let isAdd = false;
-            let stareYear = time.start.slice(0, 4);
-            let endYear = time.end.slice(0, 4);
-            if (!this.state.year.find(y => y === stareYear)) {
-                this.state.year.push(stareYear);
-            }
-            if (!this.state.year.find(y => y === endYear)) {
-                this.state.year.push(endYear);
-            }
-
             this.rowList.forEach((row, i) => {
                 // 設定最晚日期
                 if (!this.lastDayjs || this.lastDayjs.isBefore(time.end)) {
@@ -121,6 +146,9 @@ export class Timeline extends React.Component {
         }
         this.rowList.forEach((row, rowIndex) => {
             row.forEach(time => {
+                const onClick = () => {
+                    this.props.onEditTime(time);
+                };
                 const style = {
                     height: `${this.timeHeight}px`,
                     width: `${(dayjs(time.end).diff(time.start, 'day') + 1) * this.state.dayWidth}px`,
@@ -134,6 +162,7 @@ export class Timeline extends React.Component {
                         className="time-item-container"
                         onMouseEnter={onItemMouseEnter}
                         onMouseLeave={onItemMouseLeave}
+                        onClick={onClick}
                     >
                         <TimeItem timeItemData={time}></TimeItem>
                     </div>
@@ -142,8 +171,6 @@ export class Timeline extends React.Component {
         })
         return result;
     }
-
-
 
     drawYear() {
         const firstDayjs = this.firstDayjs.subtract(this.state.paddingDay, 'day');
@@ -209,6 +236,7 @@ export class Timeline extends React.Component {
             left: pageX + this.state.scrollLeft
         }
     }
+
     drawDay() {
         return this.state.day.map(dayData => {
             return (

@@ -1,0 +1,108 @@
+.edit-time-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.edit-time-container input[type="text"],
+.edit-time-container input[type="date"] {
+    flex: 1;
+    padding: 6px 0px;
+    border: none;
+    border-bottom: solid 1px #333;
+    outline: none;
+}
+
+.edit-time {
+    padding: 30px;
+    padding-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    position: relative;
+}
+
+.edit-time .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.edit-time .row:not(:first-child) {
+    padding-top: 20px;
+}
+
+.edit-time .col {
+    display: flex;
+    align-items: center;
+}
+
+.edit-time .col:first-child {
+    width: 60px;
+}
+
+.edit-time .col:nth-child(2) {
+    width: 300px;
+}
+
+.edit-time .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    min-height: 40px;
+    padding: 5px 20px;
+    border-radius: 20px;
+    border: solid 1px #333;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.1s;
+}
+
+.edit-time .btn:hover {
+    background-color: #333;
+    color: #fff;
+}
+.edit-time .close {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+.edit-time .close::before,
+.edit-time .close::after {
+    display: block;
+    content: "";
+    width: 2px;
+    height: 100%;
+    background-color: #333;
+    border-radius: 2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    
+}
+
+.edit-time .close::before {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+.edit-time .close::after {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.edit-time .wave {
+    padding: 0 5px;
+}
+.edit-time .delete {
+    cursor: pointer;
+    color: #666;
+}
