@@ -86,21 +86,10 @@
 }
 
 .timeline-time-container {
-    width: 2000px;
+    min-width: 100%;
     height: calc(100% - 45px);
     overflow-x: hidden;
     overflow-y: auto;
-    background-image: repeating-linear-gradient(
-        90deg,
-        #cccccc 0px,
-        #cccccc 1px,
-        #eee 1px,
-        #eee 20px,
-        #cccccc 20px,
-        #cccccc 21px,
-        #eee 21px,
-        #eee 40px
-    );
     position: absolute;
     bottom: 0;
     left: 0;

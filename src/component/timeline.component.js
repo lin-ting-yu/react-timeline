@@ -20,7 +20,32 @@ export class Timeline extends React.Component {
         this.setRowListAndFindLast();
         this.state.year = this.state.year.sort();
         this.yearReverse = [...this.state.year].reverse();
+        window.addEventListener('keydown', (e) => {
+            if (this.isKeydown) {
+                return;
+            }
+            this.isKeydown = true;
+            if (e.code === 'Minus') {
+                if (this.state.dayWidth > 10) {
+                    this.setState({ 
+                        dayWidth: this.state.dayWidth - 5,
+                        day: []
+                    });
+                }
+            } else if (e.code === 'Equal') {
+                if (this.state.dayWidth < 100) {
+                    this.setState({ 
+                        dayWidth: this.state.dayWidth + 5,
+                        day: []
+                    });
+                }
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            this.isKeydown = false;
+        });
     }
+
     // readonly value: start;
     timeItemList = null;
     firstDayjs = null;
@@ -29,10 +54,12 @@ export class Timeline extends React.Component {
     timeHeight = 30;
     topPadding = 10;
     rowPadding = 20;
+    titlePadding = 40;
 
     rowList = [];
 
     // readonly value: end;
+    isKeydown = false;
     isMouseEnter = true;
     isItemMouseEnter = false;
 
@@ -46,8 +73,8 @@ export class Timeline extends React.Component {
     setRowListAndFindLast() {
         this.timeItemList.forEach((time) => {
             let isAdd = false;
-            let stareYear = time.start.slice(0, 4)
-            let endYear = time.end.slice(0, 4)
+            let stareYear = time.start.slice(0, 4);
+            let endYear = time.end.slice(0, 4);
             if (!this.state.year.find(y => y === stareYear)) {
                 this.state.year.push(stareYear);
             }
@@ -80,12 +107,14 @@ export class Timeline extends React.Component {
         const result = [];
         const paddingDay = this.state.paddingDay + 1;
         const onItemMouseEnter = (e) => {
-            const rect = e.target.getBoundingClientRect()
+            const rect = e.target.getBoundingClientRect();
             this.isItemMouseEnter = true;
-            this.setState({ day: [
-                this.calcDay(rect.left, 'M/D', 'flex-end'),
-                this.calcDay(rect.right, 'M/D', 'flex-start'),
-            ] });
+            this.setState({
+                day: [
+                    this.calcDay(rect.left, 'M/D', 'flex-end'),
+                    this.calcDay(rect.right, 'M/D', 'flex-start', -1),
+                ]
+            });
         }
         const onItemMouseLeave = (e) => {
             this.isItemMouseEnter = false;
@@ -119,16 +148,15 @@ export class Timeline extends React.Component {
     drawYear() {
         const firstDayjs = this.firstDayjs.subtract(this.state.paddingDay, 'day');
         const fourDayWidth = this.state.dayWidth * 8;
-        const padding = this.state.dayWidth * 2;
         let nextLeft = window.innerWidth;
         return this.yearReverse.map(year => {
             let left = 0
             if (nextLeft < fourDayWidth) {
-                left = padding - (fourDayWidth - nextLeft);
+                left = this.titlePadding - (fourDayWidth - nextLeft);
             } else {
                 left = (dayjs(`${year}-1-1`).diff(firstDayjs, 'day') + 1) * this.state.dayWidth - this.state.scrollLeft - 5;
-                if (left < padding) {
-                    left = padding;
+                if (left < this.titlePadding) {
+                    left = this.titlePadding;
                 } else if (left > window.innerWidth) {
                     left = window.innerWidth + 10;
                 }
@@ -172,11 +200,11 @@ export class Timeline extends React.Component {
         });
     }
 
-    calcDay(pageX, format, pos) {
+    calcDay(pageX, format, pos, transform = 0) {
         const dayLength = ~~((pageX + this.state.scrollLeft) / this.state.dayWidth);
         return {
             format,
-            day: this.firstDayjs.add(dayLength - this.state.paddingDay - 1, 'day'),
+            day: this.firstDayjs.add(dayLength - this.state.paddingDay - 1 + transform, 'day'),
             pos,
             left: pageX + this.state.scrollLeft
         }
@@ -185,7 +213,7 @@ export class Timeline extends React.Component {
         return this.state.day.map(dayData => {
             return (
                 <div
-                    key={dayData.day.format('YYYY-MM-DD')}
+                    key={dayData.left}
                     style={{
                         left: `${dayData.left}px`,
                         alignItems: dayData.pos
@@ -205,6 +233,15 @@ export class Timeline extends React.Component {
         const dayStyle = {
             width: (this.lastDayjs.diff(this.firstDayjs, 'day') + 1 + this.state.paddingDay * 2) * this.state.dayWidth + 'px'
         };
+        const timeContainerStyle = {
+            ...dayStyle,
+            backgroundImage: `repeating-linear-gradient(${'90deg, ' +
+                '#cccccc 0px, ' +
+                '#cccccc 1px, ' +
+                '#eee 1px, ' +
+                `#eee ${this.state.dayWidth}px`
+                })`
+        }
         const onTimeScroll = (e) => {
             this.setState({ scrollLeft: e.target.scrollLeft });
         };
@@ -212,11 +249,11 @@ export class Timeline extends React.Component {
             if (this.isItemMouseEnter) {
                 return;
             }
-            this.setState({ day: [this.calcDay(e.pageX, 'D', 'center')] });
+            this.setState({ day: [this.calcDay(e.pageX, 'M/D', 'center')] });
         };
         const onTimeMouseEnter = (e) => {
             this.isMouseEnter = true;
-            this.setState({ day: [this.calcDay(e.pageX, 'D', 'center')] });
+            this.setState({ day: [this.calcDay(e.pageX, 'M/D', 'center')] });
         };
         const onTimeMouseLeave = (e) => {
             this.isMouseEnter = false;
@@ -226,7 +263,7 @@ export class Timeline extends React.Component {
             <div className="timeline-container">
                 <div
                     className="timeline-title"
-                    style={{ padding: `20px ${this.state.dayWidth * 2}px` }}
+                    style={{ padding: `20px ${this.titlePadding}px` }}
                 >Airtable Timeline</div>
                 <div className="timeline-content">
                     <div className="timeline-year-list">
@@ -250,7 +287,7 @@ export class Timeline extends React.Component {
                         </div>
                         <div
                             className="timeline-time-container"
-                            style={dayStyle}
+                            style={timeContainerStyle}
                         >
                             {timeItemList}
                         </div>
