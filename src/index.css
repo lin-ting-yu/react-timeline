@@ -8,4 +8,5 @@ html, body, #root, .parent-container {
   background-color: #eeeeee;
   font-family: Arial, 微軟正黑體;
   color: #333;
+  overflow: hidden;
 }
