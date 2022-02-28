@@ -2,9 +2,10 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Timeline } from './component/timeline.component';
 import { EditTime } from './component/edit-time.component';
-import timelineItems from './data/timelineItems';
+import TimelineItemList from './data/timeline-item-list';
 import './index.css';
-import * as dayjs from 'dayjs'
+import * as dayjs from 'dayjs';
+import { v4 as uuidv4 } from 'uuid';
 
 class App extends React.Component {
 
@@ -14,7 +15,7 @@ class App extends React.Component {
       isEdit: false,
       isAdd: false,
       time: null,
-      timeItemList: timelineItems
+      timeItemList: TimelineItemList
     }
   }
 
@@ -101,7 +102,7 @@ class App extends React.Component {
       this.setState({
         isAdd: true,
         time: {
-          id: new Date().getTime(),
+          id: uuidv4(),
           name: '',
           start: today,
           end: today,
