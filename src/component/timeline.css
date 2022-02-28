@@ -12,6 +12,12 @@
     font-family: Arial Black;
 }
 
+@media only screen and (max-width: 768px)   {
+    .timeline-title  {
+        font-size: 30px;
+    }
+}
+
 .timeline-content {
     display: flex;
     flex-direction: column;

@@ -18,7 +18,27 @@ export class Timeline extends React.Component {
 
         this.oldTimeItemList = props.timeItemList;
         this.init(this.props, this.state);
-        
+
+        let prevMode = ''; // M || L
+
+        const checkSize = () => {
+            let mode = '';
+            if (window.innerWidth < 768) {
+                this.titlePadding = 20;
+                mode = 'M';
+            } else {
+                this.titlePadding = 40;
+                mode = 'L';
+            }
+            if (mode !== prevMode) {
+                prevMode = mode;
+                this.setState({});
+            }
+        }
+        window.addEventListener('resize', () => {
+            checkSize();
+        })
+        checkSize();
     }
 
     // readonly value: start;
@@ -86,6 +106,7 @@ export class Timeline extends React.Component {
         this.timeItemList = this.sortTimeItemList(props, state);
         // 設定最早日期
         this.firstDayjs = dayjs(this.timeItemList[0].start);
+        this.lastDayjs = null;
         this.setRowListAndFindLast(props, state);
         const firstDayjs = this.firstDayjs.subtract(this.state.paddingDay, 'day').format('YYYY');
         const lastDayjs = this.lastDayjs.add(this.state.paddingDay, 'day').format('YYYY');
@@ -132,7 +153,9 @@ export class Timeline extends React.Component {
         const result = [];
         const paddingDay = this.state.paddingDay + 1;
         const onItemMouseEnter = (e) => {
-            const rect = e.target.getBoundingClientRect();
+            const isText = e.target.classList.contains('text-container');
+            const target = isText ? e.target.parentElement : e.target;
+            const rect = target.getBoundingClientRect();
             this.isItemMouseEnter = true;
             this.setState({
                 day: [
@@ -174,7 +197,7 @@ export class Timeline extends React.Component {
 
     drawYear() {
         const firstDayjs = this.firstDayjs.subtract(this.state.paddingDay, 'day');
-        const fourDayWidth = this.state.dayWidth * 8;
+        const fourDayWidth = 20 * 8;
         let nextLeft = window.innerWidth;
         return this.yearReverse.map(year => {
             let left = 0
@@ -303,6 +326,7 @@ export class Timeline extends React.Component {
                         onMouseEnter={onTimeMouseEnter}
                         onMouseLeave={onTimeMouseLeave}
                         onMouseMove={onTimeMouseMove}
+                        onContextMenu={(e) => e.preventDefault()}
                     >
                         <div className="timeline-month-list">
                             {monthList}

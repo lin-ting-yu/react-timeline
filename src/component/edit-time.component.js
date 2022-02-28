@@ -19,6 +19,10 @@ export class EditTime extends React.Component {
             });
         };
         const onConfirm = () => {
+            console.log(innerValue);
+            if (!innerValue.start || !innerValue.end || !innerValue.name) {
+                return;
+            }
             this.props.onConfirmEdit(innerValue);
         }
         const onClose = () => {
@@ -26,6 +30,9 @@ export class EditTime extends React.Component {
         }
         const onDelete = () => {
             this.props.onConfirmEdit(innerValue, true);
+        }
+        const isDisabled = () => {
+            return !innerValue.start || !innerValue.end || !innerValue.name;
         }
         return (
             <div className="edit-time-container">
@@ -79,7 +86,7 @@ export class EditTime extends React.Component {
                     </div>
                     <div className="row">
                         <div
-                            className="btn"
+                            className={`btn ${isDisabled() ? 'disabled' : ''}`}
                             onClick={onConfirm}
                         >Confirm</div>
                     </div>

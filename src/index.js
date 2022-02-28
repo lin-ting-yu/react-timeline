@@ -103,7 +103,7 @@ class App extends React.Component {
         isAdd: true,
         time: {
           id: uuidv4(),
-          name: '',
+          name: 'Name',
           start: today,
           end: today,
           color: '#333333'
